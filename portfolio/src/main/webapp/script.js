@@ -26,3 +26,12 @@ function addRandomFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
+
+function makeResponsive() {
+  var currentElement = document.getElementById("myTopnav");
+  if (currentElement.className === "topnav") {
+    currentElement.className += " responsive";
+  } else {
+    currentElement.className = "topnav";
+  }
+}
