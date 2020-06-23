@@ -13,6 +13,25 @@
   margin-top: 20px;
 }
 
+#supp-pages {
+  background-color: lavender;
+  flex: 1;
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  margin: 0 auto;
+  height: 100%;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  padding: 0;
+}
+
+#inner {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 .image-cropper {
     width: 300px;
     height: 300px;
