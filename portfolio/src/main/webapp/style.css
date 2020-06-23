@@ -72,7 +72,6 @@
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
 }
 
-/* Add a black background color to the top navigation */
 .topnav {
   background-color: #333;
   overflow: hidden;
@@ -105,23 +104,33 @@
   color: black;
 }
 
-/* Hide the link that should open and close the topnav on small screens */
+/* Hide the link that should open and close the 
+   topnav on small screens */
 .topnav .icon {
   display: none;
 }
 
-/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+/* When the screen is less than 600 pixels wide, hide all links, 
+   except for the first one ("Home"). Show the link that contains 
+   should open and close the topnav (.icon) */
 @media screen and (max-width: 85%) {
-  .topnav a:not(:first-child) {display: none;}
+  .topnav a:not(:first-child) {
+      display: none;
+  }
   .topnav a.icon {
     float: right;
     display: block;
   }
 }
 
-/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+/* The "responsive" class is added to the topnav with JavaScript 
+   when the user clicks on the icon. This class makes the topnav look 
+   good on small screens (display the links vertically instead of 
+   horizontally) */
 @media screen and (max-width: 85%) {
-  .topnav.responsive {position: relative;}
+  .topnav.responsive {
+      position: relative;
+  }
   .topnav.responsive a.icon {
     position: absolute;
     right: 0;

@@ -27,6 +27,9 @@ function addRandomFact() {
   factContainer.innerText = fact;
 }
 
+/***
+ * Highlights the user-selected element in the top navigation bar
+ */
 function makeResponsive() {
   var currentElement = document.getElementById("myTopnav");
   if (currentElement.className === "topnav") {
