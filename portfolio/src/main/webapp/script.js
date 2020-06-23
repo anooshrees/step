@@ -26,3 +26,15 @@ function addRandomFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
+
+/***
+ * Highlights the user-selected element in the top navigation bar
+ */
+function makeResponsive() {
+  var currentElement = document.getElementById("myTopnav");
+  if (currentElement.className === "topnav") {
+    currentElement.className += " responsive";
+  } else {
+    currentElement.className = "topnav";
+  }
+}
