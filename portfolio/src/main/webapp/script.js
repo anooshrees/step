@@ -38,3 +38,12 @@ function makeResponsive() {
     currentElement.className = "topnav";
   }
 }
+
+/**
+ * Part of the tutorial for week 3; retrieve response from Servlet 
+ */
+async function getHelloUsingAsyncAwait() {
+  const response = await fetch('/data');
+  const hello = await response.text();
+  document.getElementById('hello-container').innerText = hello.substring(4, hello.length-5-1);
+}

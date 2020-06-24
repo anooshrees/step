@@ -13,6 +13,10 @@
   margin-top: 20px;
 }
 
+#hello-container {
+    margin-top: 20px;
+}
+
 #supp-pages {
   background-color: lavender;
   flex: 1;
