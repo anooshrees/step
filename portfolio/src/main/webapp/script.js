@@ -45,5 +45,9 @@ function makeResponsive() {
 async function getHelloUsingAsyncAwait() {
   const response = await fetch('/data');
   const hello = await response.text();
-  document.getElementById('hello-container').innerText = hello.substring(4, hello.length-5-1);
+
+  // When adding text to the website, remove the HTML tags from servlet output for readability 
+  document.getElementById('hello-container').innerText = 
+        hello.substring(4 /* removes <h1> from beginning of string */, 
+                        hello.length-6 /* removes </h1> from end of string */);
 }
