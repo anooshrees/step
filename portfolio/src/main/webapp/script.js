@@ -38,3 +38,45 @@ function makeResponsive() {
     currentElement.className = "topnav";
   }
 }
+
+/**
+ * Part of the tutorial for week 3; retrieve response from Servlet 
+ */
+async function getHelloUsingAsyncAwait() {
+  const response = await fetch('/data');
+  const hello = await response.text();
+
+  // When adding text to the website, remove the HTML tags from servlet output for readability 
+  document.getElementById('hello-container').innerText = 
+        hello.substring(4 /* removes <h1> from beginning of string */, 
+                        hello.length-6 /* removes </h1> from end of string */);
+}
+
+/**
+ * Part of the tutorial for week 3; retrive hard-coded comments stored in a JSON
+ * object and include them in HTML for the site.
+ */
+
+function getComments() {
+  fetch('/data').then(response => response.json()).then((comments) => {
+    // stats is an object, not a string, so we have to
+    // reference its fields to create HTML content
+
+    const statsListElement = document.getElementById('comments-container');
+    statsListElement.innerHTML = '';
+
+    statsListElement.appendChild(
+        createListElement(comments[0]));
+    statsListElement.appendChild(
+        createListElement(comments[1]));
+    statsListElement.appendChild(
+        createListElement(comments[2]));
+  });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
+}
