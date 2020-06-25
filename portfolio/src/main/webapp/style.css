@@ -17,6 +17,10 @@
     margin-top: 20px;
 }
 
+#comments-container {
+    margin-top: 20px;
+}
+
 #supp-pages {
   background-color: lavender;
   flex: 1;
