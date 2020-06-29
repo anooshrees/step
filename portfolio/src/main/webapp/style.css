@@ -21,6 +21,10 @@
     margin-top: 20px;
 }
 
+#comments {
+    margin-top: 20px;
+}
+
 #supp-pages {
   background-color: lavender;
   flex: 1;
@@ -59,6 +63,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .left {

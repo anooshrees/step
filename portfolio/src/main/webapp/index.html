@@ -54,8 +54,16 @@
             <button onclick="addRandomFact()">Hello</button>
             <div id="fact-container"></div>
 
-            <p>Click here for comments:</p>
-            <button onclick="getComments()">Right here!</button>
+            <form action="/data" method="POST" id="comments">
+                <p>Thanks for visitng my site. Leave a comment here!</p>
+                <textarea name="text-input">Your thoughts here!</textarea>
+                <br/><br/>
+
+                <input type="submit" value="Click here to submit your comment."/>
+                <br><br/>
+            </form>
+
+            <button onclick="getComments()">Click here to see previously-left comments</button>
             <div id="comments-container"></div>
         </div>
     </div>
