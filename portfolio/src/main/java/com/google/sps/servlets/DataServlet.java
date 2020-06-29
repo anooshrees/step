@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List comments = new ArrayList<>();
+  private List comments = new ArrayList<String>();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
