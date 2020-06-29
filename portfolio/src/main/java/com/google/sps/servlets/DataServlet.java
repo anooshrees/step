@@ -14,10 +14,20 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.sps.data.Comment;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import com.google.gson.Gson;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,13 +37,18 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List comments = new ArrayList<String>();
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
-    String comment = getParameter(request, "text-input", "");
-    comments.add(comment);
+    String content = getParameter(request, "text-input", "");
+    long timestamp = System.currentTimeMillis();
+
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("content", content);
+    commentEntity.setProperty("timestamp", timestamp);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
@@ -49,6 +64,20 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Comment> comments = new ArrayList<Comment>();
+    for (Entity entity : results.asIterable()) {
+      String content = (String) entity.getProperty("content");
+      long timestamp = (long) entity.getProperty("timestamp");
+
+      Comment newComment = new Comment(content, timestamp);
+      comments.add(newComment);
+    }
+    
     Gson gson = new Gson();
     String json = gson.toJson(comments);
 

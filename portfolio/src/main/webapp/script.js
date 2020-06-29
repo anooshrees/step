@@ -59,14 +59,10 @@ async function getHelloUsingAsyncAwait() {
 
 function getComments() {
   fetch('/data').then(response => response.json()).then((comments) => {
-    const statsListElement = document.getElementById('comments-container');
-    statsListElement.innerHTML = '';
-
-    var index;
-    for (index = 0; index<comments.length; index++) {
-        statsListElement.appendChild(
-            createListElement(comments[index]));
-    }
+    const commentsListElement = document.getElementById('comments-container');
+    comments.forEach((comment) => {
+      commentsListElement.appendChild(createListElement(comment.content));
+    })
   });
 }
 
