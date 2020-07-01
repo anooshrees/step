@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -66,16 +65,39 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
+    int num;
+    try {
+      num = Integer.parseInt(getParameter(request, "num-comments", Integer.toString(Integer.MAX_VALUE)));
+    } catch (NumberFormatException e) {
+      response.setContentType("text/html");
+      response.getWriter().println("Please enter a valid integer between 1 and 50.");
+      return;
+    }
+
+    if (num < 0) {
+      response.setContentType("text/html");
+      response.getWriter().println("Please enter a positive integer between 1 and 50.");
+      return;
+    }
+
+    int count = 0;
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     List<Comment> comments = new ArrayList<Comment>();
     for (Entity entity : results.asIterable()) {
+      if (count == num) {
+          break;
+      }
+
       String content = (String) entity.getProperty("content");
       long timestamp = (long) entity.getProperty("timestamp");
 
       Comment newComment = new Comment(content, timestamp);
       comments.add(newComment);
+
+      count++;
     }
     
     Gson gson = new Gson();

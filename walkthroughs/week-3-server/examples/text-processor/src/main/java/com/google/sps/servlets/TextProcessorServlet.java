@@ -42,7 +42,7 @@ public final class TextProcessorServlet extends HttpServlet {
 
     // Sort the words.
     if (sort) {
-      Arrays.sort(words);
+      Arrays.sort(words); 
     }
 
     // Respond with the result.

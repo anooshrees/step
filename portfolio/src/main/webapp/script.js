@@ -40,30 +40,30 @@ function makeResponsive() {
 }
 
 /**
- * Part of the tutorial for week 3; retrieve response from Servlet 
- */
-async function getHelloUsingAsyncAwait() {
-  const response = await fetch('/data');
-  const hello = await response.text();
-
-  // When adding text to the website, remove the HTML tags from servlet output for readability 
-  document.getElementById('hello-container').innerText = 
-        hello.substring(4 /* removes <h1> from beginning of string */, 
-                        hello.length-6 /* removes </h1> from end of string */);
-}
-
-/**
  * Part of the tutorial for week 3; retrive hard-coded comments stored in a JSON
  * object and include them in HTML for the site.
  */
-
 function getComments() {
+  document.getElementById('comments-container').innerHTML = "";
+
   fetch('/data').then(response => response.json()).then((comments) => {
-    const commentsListElement = document.getElementById('comments-container');
-    comments.forEach((comment) => {
-      commentsListElement.appendChild(createListElement(comment.content));
-    })
-  });
+        const commentsListElement = document.getElementById('comments-container');
+        comments.forEach((comment) => {
+            commentsListElement.appendChild(createListElement(comment.content));
+        })
+    });
+}
+
+function limitComments(){
+    document.getElementById('comments-container').innerHTML = "";
+
+    fetch('/data?num-comments='+document.getElementById('num-comments').value)
+          .then(response => response.json()).then((comments) => {
+            const commentsListElement = document.getElementById('comments-container');
+            comments.forEach((comment) => {
+                commentsListElement.appendChild(createListElement(comment.content));
+            })
+        });
 }
 
 /** Creates an <li> element containing text. */
@@ -71,4 +71,11 @@ function createListElement(text) {
   const liElement = document.createElement('li');
   liElement.innerText = text;
   return liElement;
+}
+
+function deleteComments() {
+  fetch('/delete-data', {method: 'POST', body: new URLSearchParams()})
+  .then(response => response.text()).then(() => {
+      getComments();
+  });
 }

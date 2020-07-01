@@ -60,10 +60,19 @@
                 <br/><br/>
 
                 <input type="submit" value="Click here to submit your comment."/>
-                <br><br/>
             </form>
 
-            <button onclick="getComments()">Click here to see previously-left comments</button>
+            <p> If you only want to view a limited number of comments, enter that number here: </p>
+            <input type="number" id="num-comments" name="num-comments" min="1" max="50" 
+                   value="10">
+            <br>
+                   
+            <div id="button-container">
+                <button onclick="limitComments()">View limited comments</button>
+                <button onclick="getComments()">View all comments</button>
+                <button onclick="deleteComments()"> Delete all comments </button>
+            </div>
+            
             <div id="comments-container"></div>
         </div>
     </div>
