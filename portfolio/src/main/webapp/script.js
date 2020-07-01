@@ -59,18 +59,10 @@ async function getHelloUsingAsyncAwait() {
 
 function getComments() {
   fetch('/data').then(response => response.json()).then((comments) => {
-    // stats is an object, not a string, so we have to
-    // reference its fields to create HTML content
-
-    const statsListElement = document.getElementById('comments-container');
-    statsListElement.innerHTML = '';
-
-    statsListElement.appendChild(
-        createListElement(comments[0]));
-    statsListElement.appendChild(
-        createListElement(comments[1]));
-    statsListElement.appendChild(
-        createListElement(comments[2]));
+    const commentsListElement = document.getElementById('comments-container');
+    comments.forEach((comment) => {
+      commentsListElement.appendChild(createListElement(comment.content));
+    })
   });
 }
 
