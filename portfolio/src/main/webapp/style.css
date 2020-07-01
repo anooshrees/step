@@ -17,8 +17,25 @@
     margin-top: 20px;
 }
 
+#button-container {
+    list-style: none;
+    padding-left: 0px;
+    font-size: 18px;
+}
+
+#button-container li {
+    display:inline-block;
+    margin-right: 8px;
+}
+
+#button-container a {
+    text-decoration: none;
+    padding: 4px;
+}
+
 #comments-container {
     margin-top: 20px;
+    list-style: none;
 }
 
 #comments {
