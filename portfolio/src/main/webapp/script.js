@@ -46,7 +46,7 @@ function makeResponsive() {
 function getComments() {
   document.getElementById('comments-container').innerHTML = "";
 
-  fetch('/data?num-comments=10').then(response => response.json()).then((comments) => {
+  fetch('/data').then(response => response.json()).then((comments) => {
         const commentsListElement = document.getElementById('comments-container');
         comments.forEach((comment) => {
             commentsListElement.appendChild(createListElement(comment.content));
@@ -57,8 +57,8 @@ function getComments() {
 function limitComments(){
     document.getElementById('comments-container').innerHTML = "";
 
-    fetch('/data?num-comments='+
-          document.getElementById('num-comments').value).then(response => response.json()).then((comments) => {
+    fetch('/data?num-comments='+document.getElementById('num-comments').value)
+          .then(response => response.json()).then((comments) => {
             const commentsListElement = document.getElementById('comments-container');
             comments.forEach((comment) => {
                 commentsListElement.appendChild(createListElement(comment.content));
