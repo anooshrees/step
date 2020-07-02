@@ -65,6 +65,8 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
+    // retrieve the limit on the number of comments. If one does not exist,
+    // set the limit to the highest integer value possible.
     int num;
     try {
       num = Integer.parseInt(getParameter(request, "num-comments", Integer.toString(Integer.MAX_VALUE)));
@@ -85,6 +87,7 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    // retrieve comments until limit is reached
     List<Comment> comments = new ArrayList<Comment>();
     for (Entity entity : results.asIterable()) {
       if (count == num) {

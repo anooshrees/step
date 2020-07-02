@@ -40,7 +40,7 @@ function makeResponsive() {
 }
 
 /**
- * Part of the tutorial for week 3; retrive hard-coded comments stored in a JSON
+ * Part of the tutorial for week 3; retrive comments stored in a JSON
  * object and include them in HTML for the site.
  */
 function getComments() {
@@ -54,6 +54,10 @@ function getComments() {
     });
 }
 
+/**
+ * Week 3 task to limit the number of comments displayed by accessing data
+ * from a query URL.
+ */
 function limitComments(){
     document.getElementById('comments-container').innerHTML = "";
 
@@ -73,9 +77,21 @@ function createListElement(text) {
   return liElement;
 }
 
+/**
+ * Delete all of the comments using the DeleteDataServlet to empty
+ * the datastore
+ */
 function deleteComments() {
   fetch('/delete-data', {method: 'POST', body: new URLSearchParams()})
   .then(response => response.text()).then(() => {
       getComments();
+  });
+}
+
+var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8
   });
 }
