@@ -91,7 +91,31 @@ function deleteComments() {
 var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: -34.397, lng: 150.644 },
+    center: { lat: 37.3382, lng: -121.8863 },
     zoom: 8
+  });
+
+  const stanfordMarker = new google.maps.Marker({
+    position: {lat: 37.4275, lng: -122.1697},
+    map: map,
+    title: 'This is where I go to school!'
+  });
+
+  const highSchoolMarker = new google.maps.Marker({
+    position: {lat: 37.3136, lng: -121.9690},
+    map: map,
+    title: 'This is where I went to high school!'
+  });
+
+  const mountMarker = new google.maps.Marker({
+    position: {lat: 37.1605, lng: -121.8986},
+    map: map,
+    title: 'This Mount Umunhum, the site of one of my favorite hikes.'
+  });
+
+  const halfMoonBayMarker = new google.maps.Marker({
+    position: {lat: 37.4636, lng: -122.4286},
+    map: map,
+    title: 'This my favorite beach town; I come here from home or campus to swim, hike, and.'
   });
 }
