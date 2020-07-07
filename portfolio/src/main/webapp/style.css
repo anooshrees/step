@@ -9,6 +9,15 @@
   margin: 0 auto;
 }
 
+hr {
+  border: 0;
+  clear:both;
+  display:block;
+  width: 96%;               
+  background-color:black;
+  height: 1px;
+}
+
 #fact-container {
   margin-top: 20px;
 }

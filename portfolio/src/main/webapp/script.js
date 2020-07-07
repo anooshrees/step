@@ -95,27 +95,27 @@ function initMap() {
     zoom: 8
   });
 
-  const stanfordMarker = new google.maps.Marker({
-    position: {lat: 37.4275, lng: -122.1697},
-    map: map,
-    title: 'This is where I go to school!'
-  });
+  addLandmark(
+      map, 37.4275, -122.1697, 'Stanford University',
+      'This is where I go to school!')
+  addLandmark(
+      map, 37.3136, -121.9690, 'The Harker School',
+      'This is where I went to high school!')
+  addLandmark(
+      map, 37.1605, -121.8986, 'Mount Umunhum',
+      'This Mount Umunhum, the site of one of my favorite hikes.')
+  addLandmark(
+      map, 37.4636, -122.4286, 'Half Moon Bay',
+      'This my favorite beach town; I come here from home or campus to swim, hike, and eat.');
+}
 
-  const highSchoolMarker = new google.maps.Marker({
-    position: {lat: 37.3136, lng: -121.9690},
-    map: map,
-    title: 'This is where I went to high school!'
-  });
+/** Adds a marker that shows an info window when clicked. */
+function addLandmark(map, lat, lng, title, description) {
+  const marker = new google.maps.Marker(
+      {position: {lat: lat, lng: lng}, map: map, title: title});
 
-  const mountMarker = new google.maps.Marker({
-    position: {lat: 37.1605, lng: -121.8986},
-    map: map,
-    title: 'This Mount Umunhum, the site of one of my favorite hikes.'
-  });
-
-  const halfMoonBayMarker = new google.maps.Marker({
-    position: {lat: 37.4636, lng: -122.4286},
-    map: map,
-    title: 'This my favorite beach town; I come here from home or campus to swim, hike, and.'
+  const infoWindow = new google.maps.InfoWindow({content: description});
+  marker.addListener('click', () => {
+    infoWindow.open(map, marker);
   });
 }
