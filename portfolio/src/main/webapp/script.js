@@ -76,10 +76,10 @@ function getSentiment() {
     fetch('/data').then(response => response.json()).then((comments) => {
         const commentsListElement = document.getElementById('comments-container');
         comments.forEach((comment) => {
-            commentsListElement.appendChild(createParagraphElement(
-                "A user wrote: " + comment.content + " at " + comment.timestamp));
-            commentsListElement.appendChild(createParagraphElement(
-                "The sentiment analysis score for this comment is: " + comment.sentiment));
+            commentsListElement.appendChild(createListElement(
+                "The sentiment score for \"" + comment.content + 
+                "\" is " + comment.sentiment.toString()
+            ));
         })
     });
 }

@@ -67,8 +67,7 @@ public class DataServlet extends HttpServlet {
   }
 
   private float getSentimentScore(String comment) throws IOException {
-    Document doc =
-        Document.newBuilder().setContent(comment).setType(Document.Type.PLAIN_TEXT).build();
+    Document doc = Document.newBuilder().setContent(comment).setType(Document.Type.PLAIN_TEXT).build();
     
     LanguageServiceClient languageService = LanguageServiceClient.create();
     Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
@@ -113,7 +112,7 @@ public class DataServlet extends HttpServlet {
 
       String content = (String) entity.getProperty("content");
       long timestamp = (long) entity.getProperty("timestamp");
-      float sentiment = (float) entity.getProperty("sentiment");
+      Double sentiment = (Double) entity.getProperty("sentiment");
 
       Comment newComment = new Comment(content, timestamp, sentiment);
       comments.add(newComment);
