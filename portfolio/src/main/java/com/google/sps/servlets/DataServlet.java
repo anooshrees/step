@@ -44,10 +44,12 @@ public class DataServlet extends HttpServlet {
     // Get the input from the form.
     String content = getParameter(request, "text-input", "");
     long timestamp = System.currentTimeMillis();
+    float sentiment = getSentimentScore(content);
 
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("content", content);
     commentEntity.setProperty("timestamp", timestamp);
+    commentEntity.setProperty("sentiment", sentiment);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
@@ -62,6 +64,17 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+
+  private float getSentimentScore(String comment) throws IOException {
+    Document doc = Document.newBuilder().setContent(comment).setType(Document.Type.PLAIN_TEXT).build();
+    
+    LanguageServiceClient languageService = LanguageServiceClient.create();
+    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+    float score = sentiment.getScore();
+    languageService.close();
+
+    return score;
   }
 
   @Override
@@ -99,8 +112,9 @@ public class DataServlet extends HttpServlet {
 
       String content = (String) entity.getProperty("content");
       long timestamp = (long) entity.getProperty("timestamp");
+      Double sentiment = (Double) entity.getProperty("sentiment");
 
-      Comment newComment = new Comment(content, timestamp);
+      Comment newComment = new Comment(content, timestamp, sentiment);
       comments.add(newComment);
 
       count++;
@@ -111,13 +125,5 @@ public class DataServlet extends HttpServlet {
 
     response.setContentType("application/json;");
     response.getWriter().println(json);
-  }
-
-  private float getSentimentScore(String comment) {
-    Document doc =
-        Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
-    LanguageServiceClient languageService = LanguageServiceClient.create();
-    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-    return sentiment.getScore();
   }
 }

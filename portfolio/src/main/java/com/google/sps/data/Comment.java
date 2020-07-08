@@ -19,9 +19,11 @@ public final class Comment {
 
   private final String content;
   private final long timestamp;
+  private final Double sentiment;
 
-  public Comment(String content, long timestamp) {
+  public Comment(String content, long timestamp, Double sentiment) {
     this.content = content;
     this.timestamp = timestamp;
+    this.sentiment = sentiment;
   }
 }

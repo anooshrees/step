@@ -70,11 +70,32 @@ function limitComments(){
         });
 }
 
+function getSentiment() {
+    document.getElementById('comments-container').innerHTML = "";
+
+    fetch('/data').then(response => response.json()).then((comments) => {
+        const commentsListElement = document.getElementById('comments-container');
+        comments.forEach((comment) => {
+            commentsListElement.appendChild(createListElement(
+                "The sentiment score for \"" + comment.content + 
+                "\" is " + comment.sentiment.toString()
+            ));
+        })
+    });
+}
+
 /** Creates an <li> element containing text. */
 function createListElement(text) {
   const liElement = document.createElement('li');
   liElement.innerText = text;
   return liElement;
+}
+
+/** Creates a <p> element containing text */
+function createParagraphElement(text) {
+  var para = document.createElement("p");
+  var node = document.createTextNode(text);
+  para.appendChild(node);
 }
 
 /**
