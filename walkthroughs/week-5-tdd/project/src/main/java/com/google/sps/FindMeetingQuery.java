@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class FindMeetingQuery {
+
   /**
    * Handles the "find a meeting" feature by providing the user with a set of times
    * where all given meeting attendees have space in their schedule for a meeting of
@@ -43,14 +44,10 @@ public final class FindMeetingQuery {
 
       if (duration > TimeRange.WHOLE_DAY.duration()) {
           return Arrays.asList();
-      }
-
-      if (events.isEmpty() || request.getAttendees().isEmpty()) {
+      } else if (events.isEmpty() || request.getAttendees().isEmpty()) {
           return Arrays.asList(TimeRange.WHOLE_DAY);
       }
 
-      // retrieve all the times when at least one of the mandatory attendees 
-      // is busy
       List<TimeRange> busyTimeRanges = findBusyTimes(events, request.getAttendees());
 
       // no busy events for mandatory attendees means 
@@ -64,7 +61,6 @@ public final class FindMeetingQuery {
       List<TimeRange> busyByEndTime = new ArrayList<TimeRange>(busyTimeRanges);
       Collections.sort(busyByEndTime, TimeRange.ORDER_BY_END);
 
-      // meeting times that we'll eventually return as suggestion
       return findFreeTimes(busyTimeRanges, busyByEndTime, duration);
   }
 
@@ -89,7 +85,6 @@ public final class FindMeetingQuery {
                   break; // only need confirmation that one mandatory attendee is busy
               }
           }
-
           if (relevantEvent) {
               busy.add(event.getWhen());
           }
@@ -110,7 +105,7 @@ public final class FindMeetingQuery {
     *         time duration.
     */ 
   private List<TimeRange> findFreeTimes(List<TimeRange> busyTimeRanges, List<TimeRange> busyByEndTime,
-                                             long duration) {
+                                        long duration) {
       
       List<TimeRange> meetingTimes = new ArrayList<TimeRange>();
 
@@ -143,7 +138,6 @@ public final class FindMeetingQuery {
               if(possibleTime.duration() >= duration) {
                 meetingTimes.add(possibleTime);
               }
-
               startTimeIndex++;
               endTimeIndex++;
           }
