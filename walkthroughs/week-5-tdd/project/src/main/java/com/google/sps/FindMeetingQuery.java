@@ -38,17 +38,13 @@ public final class FindMeetingQuery {
    *
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-      // meeting request has: name, duration, and attendees (List of Strings)
-      // event has: time range, attendees, and name
 
       long duration = request.getDuration();
 
-       // meeting request exceeds one day
       if (duration > TimeRange.WHOLE_DAY.duration()) {
           return Arrays.asList();
       }
 
-      // all attendees are free or there are no attendees
       if (events.isEmpty() || request.getAttendees().isEmpty()) {
           return Arrays.asList(TimeRange.WHOLE_DAY);
       }
@@ -65,18 +61,64 @@ public final class FindMeetingQuery {
 
       // sort by both end and start time
       Collections.sort(busyTimeRanges, TimeRange.ORDER_BY_START);
-      ArrayList<TimeRange> busyByEndTime = new ArrayList<TimeRange>(busyTimeRanges);
+      List<TimeRange> busyByEndTime = new ArrayList<TimeRange>(busyTimeRanges);
       Collections.sort(busyByEndTime, TimeRange.ORDER_BY_END);
 
       // meeting times that we'll eventually return as suggestion
+      return findFreeTimes(busyTimeRanges, busyByEndTime, duration);
+  }
+
+
+  /**
+    * Finds the times in a day when mandatory attendees for a meeting are unavailable.
+    *
+    * @param events the events happening that day
+    * @param mandatory the attendees whose attendance is required at another meeting
+    *
+    * @return an ArrayList of TimeRange signifying when mandatory attendees are at another
+    *         event.
+    */
+  private ArrayList<TimeRange> findBusyTimes(Collection<Event> events, Collection<String> mandatory) {
+      ArrayList<TimeRange> busy = new ArrayList<TimeRange> ();
+
+      for (Event event : events) {          
+          boolean relevantEvent = false;
+          for (String attendee : event.getAttendees()) {
+              if (mandatory.contains(attendee)) {
+                  relevantEvent = true;
+                  break; // only need confirmation that one mandatory attendee is busy
+              }
+          }
+
+          if (relevantEvent) {
+              busy.add(event.getWhen());
+          }
+      }
+
+      return busy;
+  }
+
+  /**
+    * Finds the times in a day when mandatory attendees for a meeting are available for a given
+    * duration.
+    *
+    * @param busyTimeRanges the times where at least one attendees is unavailable, sorted by start time
+    * @param busybyEndTime the times where at least one attendees is unavailable, sorted by end time
+    * @param duration the length of the new meeting to be added
+    *
+    * @return an ArrayList of TimeRange signifying when mandatory attendees are available for at least
+    *         time duration.
+    */ 
+  private List<TimeRange> findFreeTimes(List<TimeRange> busyTimeRanges, List<TimeRange> busyByEndTime,
+                                             long duration) {
+      
       List<TimeRange> meetingTimes = new ArrayList<TimeRange>();
 
       int startTimeIndex = 0;
       int endTimeIndex = 0;
       
       int numBusyIntervals = busyTimeRanges.size();
-      TimeRange latestMeeting = busyByEndTime.get(numBusyIntervals-1);
-      int lastBusyTime = latestMeeting.end();
+      int lastBusyTime = busyByEndTime.get(numBusyIntervals-1).end();
 
       // handle beginning of the day before busy intervals begin
       TimeRange possibleTime = TimeRange.fromStartEnd(TimeRange.START_OF_DAY, 
@@ -113,36 +155,6 @@ public final class FindMeetingQuery {
             meetingTimes.add(possibleTime);
       }
 
-    return meetingTimes;
-  }
-
-
-  /**
-    * Finds the times in a day when mandatory attendees for a meeting are unavailable.
-    *
-    * @param events the events happening that day
-    * @param mandatory the attendees whose attendance is required at another meeting
-    *
-    * @return an ArrayList of TimeRange signifying when mandatory attendees are at another
-    *         event.
-    */
-  private ArrayList<TimeRange> findBusyTimes(Collection<Event> events, Collection<String> mandatory) {
-      ArrayList<TimeRange> busy = new ArrayList<TimeRange> ();
-
-      for (Event event : events) {          
-          boolean relevantEvent = false;
-          for (String attendee : event.getAttendees()) {
-              if (mandatory.contains(attendee)) {
-                  relevantEvent = true;
-                  break; // only need confirmation that one mandatory attendee is busy
-              }
-          }
-
-          if (relevantEvent) {
-              busy.add(event.getWhen());
-          }
-      }
-
-      return busy;
+      return meetingTimes;
   }
 }
