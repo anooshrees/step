@@ -27,7 +27,11 @@ public final class FindMeetingQuery {
   /**
    * Handles the "find a meeting" feature by providing the user with a set of times
    * where all given meeting attendees have space in their schedule for a meeting of
-   * the given duration
+   * the given duration. If optional attendees AND mandatory attendees can attend a 
+   * meeting during a set of given times, those times are returned; otherwise, the 
+   * query() call returns a list of times only the mandatory attendees can attend. In
+   * the case where there are no mandatory attendees, optional attendees are treated
+   * as though they are mandatory.
    *
    * @param events all of the events happening on the given day, each of which have
    *               a list of attendees and a TimeRange
@@ -61,18 +65,14 @@ public final class FindMeetingQuery {
           
           if(!optionalMeetingTimes.isEmpty()) { // optional AND mandatory can make it
             return optionalMeetingTimes;
-          } else { 
-              if(request.getAttendees().isEmpty()) { // only optional attendees; none can make meeting
-                  return Arrays.asList();
-              }
+          } else if(request.getAttendees().isEmpty()) { // only optional attendees were requested 
+            return Arrays.asList();                     // and none can make the meeting
           }
       }
 
       // mandatory members are free all day and 
       // there are no options including optional members
-      if (busyTimeRanges.isEmpty()) {
-          return Arrays.asList(TimeRange.WHOLE_DAY);
-      }
+      
 
       return findMeetingTimes(busyTimeRanges, duration);
   }
@@ -86,9 +86,13 @@ public final class FindMeetingQuery {
     * @return a List of meeting times that work around busyTimeRanges.
     */
   private List<TimeRange> findMeetingTimes(List<TimeRange> busyTimeRanges, long duration) {
+      if (busyTimeRanges.isEmpty()) {
+          return Arrays.asList(TimeRange.WHOLE_DAY);
+      }
+      
       Collections.sort(busyTimeRanges, TimeRange.ORDER_BY_START);
       List<TimeRange> busyByEndTime = orderByEndTime(busyTimeRanges);
-      
+
       return findFreeTimes(busyTimeRanges, busyByEndTime, duration);
   }
 
@@ -122,11 +126,9 @@ public final class FindMeetingQuery {
           for (String attendee : event.getAttendees()) {
               if (mandatory.contains(attendee)) {
                   relevantEvent = true;
+                  busy.add(event.getWhen());
                   break; // only need confirmation that one mandatory attendee is busy
               }
-          }
-          if (relevantEvent) {
-              busy.add(event.getWhen());
           }
       }
 
@@ -153,7 +155,6 @@ public final class FindMeetingQuery {
       int endTimeIndex = 0;
       
       int numBusyIntervals = busyTimeRanges.size();
-      int lastBusyTime = busyByEndTime.get(numBusyIntervals-1).end();
 
       // handle beginning of the day before busy intervals begin
       TimeRange possibleTime = TimeRange.fromStartEnd(TimeRange.START_OF_DAY, 
@@ -184,6 +185,7 @@ public final class FindMeetingQuery {
       }
 
       // check for time after all events are done
+      int lastBusyTime = busyByEndTime.get(numBusyIntervals-1).end();
       possibleTime = TimeRange.fromStartEnd(lastBusyTime, TimeRange.END_OF_DAY, true);
       if(possibleTime.duration() >= duration) {
             meetingTimes.add(possibleTime);
