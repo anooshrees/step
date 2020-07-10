@@ -70,10 +70,6 @@ public final class FindMeetingQuery {
           }
       }
 
-      // mandatory members are free all day and 
-      // there are no options including optional members
-      
-
       return findMeetingTimes(busyTimeRanges, duration);
   }
 
