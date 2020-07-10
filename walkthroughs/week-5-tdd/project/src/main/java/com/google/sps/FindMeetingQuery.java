@@ -85,11 +85,61 @@ public final class FindMeetingQuery {
       if (busyTimeRanges.isEmpty()) {
           return Arrays.asList(TimeRange.WHOLE_DAY);
       }
-      
-      Collections.sort(busyTimeRanges, TimeRange.ORDER_BY_START);
-      List<TimeRange> busyByEndTime = orderByEndTime(busyTimeRanges);
 
-      return findFreeTimes(busyTimeRanges, busyByEndTime, duration);
+      Collections.sort(busyTimeRanges, TimeRange.ORDER_BY_START);
+
+      List<TimeRange> busyMerged = mergeBusyTimes(busyTimeRanges);
+      List<TimeRange> busyByEndTime = orderByEndTime(busyMerged);
+
+      return findFreeTimes(busyMerged, busyByEndTime, duration);
+  }
+
+  /**
+   * Given a list of TimeRange objects sorted by start time, merges all of the
+   * overlapping TimeRanges to create larger busy time intervals if possible
+   *
+   * @param busyTimeRanges a List of TimeRanges sorted by start time when
+   *                       attendees are busy
+   *
+   * @return a List of merged TimeRanges that encompass all of the times that
+   *         attendees are busy 
+   */
+  private List<TimeRange> mergeBusyTimes(List<TimeRange> busyTimeRanges) {
+      List<TimeRange> merged = new ArrayList<TimeRange>();
+
+      int numOriginalIntervals = busyTimeRanges.size();
+      if (numOriginalIntervals == 1) { // nothing there to merge!
+          return busyTimeRanges;
+      }
+
+      int currentIntervalIndex = 0;
+      int nextIntervalIndex = 1;
+      int startTime = busyTimeRanges.get(0).start();
+      int endTime = busyTimeRanges.get(0).end();
+      
+      while(currentIntervalIndex < numOriginalIntervals && nextIntervalIndex < numOriginalIntervals) {
+          TimeRange currentInterval = busyTimeRanges.get(currentIntervalIndex);
+          TimeRange nextInterval = busyTimeRanges.get(nextIntervalIndex);
+          
+          if (currentInterval.contains(nextInterval)) {
+              nextIntervalIndex++;
+          } else if (currentInterval.overlaps(nextInterval)) {
+              endTime = busyTimeRanges.get(nextIntervalIndex).end();
+              currentIntervalIndex = nextIntervalIndex;
+              nextIntervalIndex = currentIntervalIndex + 1;
+          } else {
+              merged.add(TimeRange.fromStartEnd(startTime, endTime, false));
+              currentIntervalIndex = nextIntervalIndex;
+              startTime = busyTimeRanges.get(currentIntervalIndex).start();
+              endTime = busyTimeRanges.get(currentIntervalIndex).end();
+
+              nextIntervalIndex = currentIntervalIndex + 1;
+          }
+      }
+
+      merged.add(TimeRange.fromStartEnd(startTime, endTime, false));
+
+      return merged;
   }
 
   /**
